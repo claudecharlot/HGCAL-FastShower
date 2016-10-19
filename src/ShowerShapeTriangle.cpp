@@ -1,9 +1,13 @@
-#include "ShowerShapeTriangle.h"
-#include "Constants.h"
+
 #include "TMath.h"
 
+#ifdef STANDALONE
+#include "ShowerShapeTriangle.h"
+#else
+#include "HGCalSimulation/FastShower/interface/ShowerShapeTriangle.h"
+#endif
 
-using namespace Constants;
+
 
 double ShowerShapeTriangle::firstNeighboors(int i, int j) {
 

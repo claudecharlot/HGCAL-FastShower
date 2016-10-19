@@ -1,12 +1,18 @@
 
-#ifndef Geometry_h__
-#define Geometry_h__
+#ifndef __HGCalSimulation_FastShower_Geometry_h__
+#define __HGCalSimulation_FastShower_Geometry_h__
 
 #include <string>
 #include <vector>
 #include "TVectorD.h"
 #include "TMatrixD.h"
+#ifdef STANDALONE
 #include "Cell.h"
+#include "Parameters.h"
+#else
+#include "HGCalSimulation/FastShower/interface/Cell.h"
+#include "HGCalSimulation/FastShower/interface/Parameters.h"
+#endif
 
 
 class Geometry {
@@ -19,18 +25,19 @@ class Geometry {
 
   public:
 
-    Geometry() {}
+    Geometry(const Parameters::Geometry& params):
+      parameters_(params){}
     ~Geometry() {}
 
     // construct parametrised geometry, default grid 11x11, ie +-5 around the central cell
-    void constructFromParameters(int nrows=11,int ncols=11,int klayer=-1, int itype=0); 
+    void constructFromParameters(bool); 
     // construct geometry from json file
-    void constructFromJson(const std::string&);
+    void constructFromJson(bool);
     //std::vector<Cell *> getCells() {return cells_;}
 
     Cell * closestCell(double x, double y); // the cell that contains the point
     //Cell closestCell(double x, double y); // the cell that contains the point
-    bool isInCell(TVectorD position, Cell cell); // test if a point is within a cell
+    bool isInCell(TVectorD position, const Cell& cell); // test if a point is within a cell
     //bool isInRealCell(TVectorD position, Cell cell); // to apply further mouse bite or virtual dead region 
     TVectorD positionInCell(TVectorD position); // relative position within the cell
 
@@ -48,9 +55,14 @@ class Geometry {
     int getJIndex(Cell cell);
     int getLayer() {return klayer_;}
     double getZlayer() {return zlayer_;}
-    int getType() {return itype_;} 
+    Parameters::Geometry::Type getType() {return itype_;} 
 
-    void draw(double scale=0.1);
+    double a() const {return a_;}
+    double asqrt3() const {return asqrt3_;}
+    double aover2() const {return aover2_;}
+    double asqrt3over2() const {return asqrt3over2_;}
+
+    void draw(const Parameters::Display& params, double scale=0.1);
     void print();
 
   private:
@@ -60,14 +72,19 @@ class Geometry {
     void setNcols(int ncols) {ncols_ = ncols;}
     void setLayer(int klayer);
     void setZlayer(double zlayer) {zlayer_ = zlayer;}
-    void setType (int itype) {itype_=itype;}
+    void setType (Parameters::Geometry::Type itype) {itype_=itype;}
 
     std::vector<Cell *> cells_;
     int nrows_;
     int ncols_;
     int klayer_;
     double zlayer_;
-    int itype_; // cell type
+    Parameters::Geometry::Type itype_; // cell type
+    double a_;
+    double asqrt3_;
+    double aover2_;
+    double asqrt3over2_;
+    const Parameters::Geometry& parameters_;
 
 };
 

@@ -1,9 +1,14 @@
-#include "ShowerShapeHexagon.h"
-#include "Constants.h"
+
+
 #include "TMath.h"
 
+#ifdef STANDALONE
+#include "ShowerShapeHexagon.h"
+#else
+#include "HGCalSimulation/FastShower/interface/ShowerShapeHexagon.h"
+#endif
 
-using namespace Constants;
+
 
 double ShowerShapeHexagon::firstNeighboors(int i, int j) {
 
